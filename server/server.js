@@ -6,6 +6,9 @@ dotenv.config();
 
 const app = express();
 
+// Middleware to parse JSON bodies
+app.use(express.json());
+
 const PORT = process.env.PORT || 5001;
 
 async function connectToDatabase() {
@@ -26,8 +29,26 @@ async function connectToDatabase() {
   }
 }
 
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
+app.post("/api/transactions", async (req, res) => {
+  try {
+    const { title, amount, category, user_id } = req.body;
+
+    if (!title || !user_id || !category || amount === undefined) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const transaction = await sql`
+    INSERT INTO transactions (user_id, title, amount, category)
+    VALUES (${user_id}, ${title}, ${amount}, ${category})
+    RETURNING *
+    `;
+
+    console.log("Transaction created:", transaction[0]);
+    res.status(201).json(transaction[0]);
+  } catch (error) {
+    console.log("Error creating the transaction", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 connectToDatabase().then(() => {
