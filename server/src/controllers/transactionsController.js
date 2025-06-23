@@ -1,41 +1,6 @@
-import express from "express";
-import dotenv from "dotenv";
-import { sql } from "./config/db.js";
-import rateLimiter from "./middleware/rateLimiter.js";
+import { sql } from "../config/db.js";
 
-dotenv.config();
-
-const app = express();
-
-// Middleware to parse JSON bodies
-app.use(rateLimiter);
-app.use(express.json());
-
-const PORT = process.env.PORT || 5001;
-
-async function connectToDatabase() {
-  try {
-    await sql`CREATE TABLE IF NOT EXISTS transactions(
-        id SERIAL PRIMARY KEY,
-        user_id VARCHAR(255) NOT NULL,
-        title VARCHAR(255) NOT NULL,
-        amount DECIMAL(10,2) NOT NULL,
-        category VARCHAR(255) NOT NULL,
-        created_at DATE NOT NULL DEFAULT CURRENT_DATE
-    )`;
-
-    console.log("Database initialized successfully.");
-  } catch (error) {
-    console.log("Error initializing database:", error);
-    process.exit(1);
-  }
-}
-
-app.get("/", (req, res) => {
-  res.send("Welcome to the Transactions API");
-});
-
-app.get("/api/transactions/:userId", async (req, res) => {
+export async function getTransactionsByUserId(req, res) {
   try {
     const { userId } = req.params;
 
@@ -45,9 +10,9 @@ app.get("/api/transactions/:userId", async (req, res) => {
 
     res.status(200).json(transactions);
   } catch (error) {}
-});
+}
 
-app.post("/api/transactions", async (req, res) => {
+export async function createTransaction(req, res) {
   try {
     const { title, amount, category, user_id } = req.body;
 
@@ -56,10 +21,10 @@ app.post("/api/transactions", async (req, res) => {
     }
 
     const transaction = await sql`
-    INSERT INTO transactions (user_id, title, amount, category)
-    VALUES (${user_id}, ${title}, ${amount}, ${category})
-    RETURNING *
-    `;
+        INSERT INTO transactions (user_id, title, amount, category)
+        VALUES (${user_id}, ${title}, ${amount}, ${category})
+        RETURNING *
+        `;
 
     console.log("Transaction created:", transaction[0]);
     res.status(201).json(transaction[0]);
@@ -67,9 +32,9 @@ app.post("/api/transactions", async (req, res) => {
     console.log("Error creating the transaction", error);
     return res.status(500).json({ error: "Internal server error" });
   }
-});
+}
 
-app.delete("/api/transactions/:id", async (req, res) => {
+export async function deleteTransaction(req, res) {
   try {
     const { id } = req.params;
 
@@ -78,8 +43,8 @@ app.delete("/api/transactions/:id", async (req, res) => {
     }
 
     const result = await sql`
-        DELETE FROM transactions WHERE id = ${id} RETURNING * 
-    `;
+         DELETE FROM transactions WHERE id = ${id} RETURNING * 
+     `;
 
     if (result.length === 0) {
       return res.status(404).json({ error: "Transaction not found" });
@@ -93,9 +58,9 @@ app.delete("/api/transactions/:id", async (req, res) => {
     console.log("Error deleting the transaction", error);
     return res.status(500).json({ error: "Internal server error" });
   }
-});
+}
 
-app.get("/api/transactions/summary/:userId", async (req, res) => {
+export async function getSummaryByUserId(req, res) {
   try {
     const { userId } = req.params;
 
@@ -121,10 +86,4 @@ app.get("/api/transactions/summary/:userId", async (req, res) => {
     console.log("Error gettin the summary", error);
     return res.status(500).json({ error: "Internal server error" });
   }
-});
-
-connectToDatabase().then(() => {
-  app.listen(PORT, () => {
-    console.log("Server is running on PORT:", PORT);
-  });
-});
+}
