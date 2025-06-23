@@ -1,10 +1,14 @@
-import { Stack } from "expo-router";
+import { ClerkProvider } from "@clerk/clerk-expo";
+import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import SafeScreen from "@/components/SafeScreen";
+import { Slot } from "expo-router";
 
 export default function RootLayout() {
   return (
-    <SafeScreen>
-      <Stack screenOptions={{ headerShown: false }} />
-    </SafeScreen>
+    <ClerkProvider tokenCache={tokenCache}>
+      <SafeScreen>
+        <Slot screenOptions={{ headerShown: false }} />
+      </SafeScreen>
+    </ClerkProvider>
   );
 }
