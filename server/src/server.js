@@ -20,7 +20,6 @@ const PORT = process.env.PORT || 5001;
 
 app.get("/api/health", (req, res) => {
   res.send("Hello World! The server is running.");
-  res.status(200).json({ status: "ok" });
 });
 
 app.use("/api/transactions", transactionsRoute);
