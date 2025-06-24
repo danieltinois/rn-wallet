@@ -78,7 +78,7 @@ export default function Page() {
           autoCapitalize="none"
           value={emailAddress}
           placeholderTextColor={COLORS.textLight}
-          placeholder="Enter email"
+          placeholder="Enter email or username"
           onChangeText={(email) => setEmailAddress(email)}
         />
 
