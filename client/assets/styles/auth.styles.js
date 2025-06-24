@@ -9,8 +9,8 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   illustration: {
-    width: "100%",
     height: 310,
+    width: 300,
     resizeMode: "contain",
   },
   title: {
@@ -89,6 +89,26 @@ export const styles = StyleSheet.create({
     letterSpacing: 2,
   },
 
+  inputWithIconContainer: {
+    backgroundColor: COLORS.white,
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  inputWithIcon: {
+    flex: 1,
+    fontSize: 16,
+    color: COLORS.text,
+    padding: 0,
+    margin: 0,
+  },
+
   // 🔴 Error styles
   errorBox: {
     backgroundColor: "#FFE5E5",
@@ -102,7 +122,7 @@ export const styles = StyleSheet.create({
     width: "100%",
   },
   errorText: {
-    color: COLORS.text,
+    color: COLORS.textError,
     marginLeft: 8,
     flex: 1,
     fontSize: 14,
