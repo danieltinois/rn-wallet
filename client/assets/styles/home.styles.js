@@ -64,7 +64,7 @@ export const styles = StyleSheet.create({
     elevation: 3,
   },
   addButtonText: {
-    color: COLORS.white,
+    color: "#FFF",
     fontWeight: "600",
     marginLeft: 4,
   },
